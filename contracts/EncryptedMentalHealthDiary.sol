@@ -51,7 +51,9 @@ contract EncryptedMentalHealthDiary is SepoliaConfig {
 
         // Grant decryption permissions to the user (like proof-quill-shine-main)
         FHE.allowThis(mentalState);
+        FHE.allow(mentalState, msg.sender);
         FHE.allowThis(stress);
+        FHE.allow(stress, msg.sender);
 
         // Update tracking
         if (date > _lastEntryDate[msg.sender]) {
@@ -71,6 +73,7 @@ contract EncryptedMentalHealthDiary is SepoliaConfig {
         view
         returns (bytes32 encryptedHandle)
     {
+        require(_userEntries[user][date].exists, "Entry does not exist");
         return _userEntries[user][date].mentalStateHandle;
     }
 
@@ -83,6 +86,7 @@ contract EncryptedMentalHealthDiary is SepoliaConfig {
         view
         returns (bytes32 encryptedHandle)
     {
+        require(_userEntries[user][date].exists, "Entry does not exist");
         return _userEntries[user][date].stressHandle;
     }
 
@@ -101,6 +105,7 @@ contract EncryptedMentalHealthDiary is SepoliaConfig {
             uint256 timestamp
         )
     {
+        require(_userEntries[user][date].exists, "Entry does not exist");
         DailyEntry memory entry = _userEntries[user][date];
         return (entry.mentalStateHandle, entry.stressHandle, entry.timestamp);
     }
