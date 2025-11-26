@@ -17,10 +17,11 @@ A privacy-preserving mental health tracking application using Fully Homomorphic 
 
 ## Tech Stack
 
-- **Smart Contracts**: Solidity with FHEVM
-- **Frontend**: React + TypeScript + Vite
-- **Wallet**: RainbowKit (Rainbow wallet)
-- **Encryption**: Zama FHEVM
+- **Smart Contracts**: Solidity with FHEVM integration
+- **Frontend**: React + TypeScript + Vite + Tailwind CSS
+- **Wallet Integration**: RainbowKit for secure Web3 connection
+- **Homomorphic Encryption**: Zama FHEVM for privacy-preserving computations
+- **Build Tools**: Hardhat for contract development and testing
 
 ## Prerequisites
 
@@ -118,33 +119,13 @@ The frontend will be available at `http://localhost:8080`
 - `isStressIncreased(user, currentDate, previousDate)` - Check if stress increased
 - `isAbnormalChange(user, currentDate, previousDate)` - Detect abnormal changes (>20 difference)
 
-## Project Structure
+## Security & Privacy
 
-```
-heal-lock/
-├── contracts/          # Solidity smart contracts
-│   └── EncryptedMentalHealthDiary.sol
-├── test/               # Hardhat tests
-│   ├── EncryptedMentalHealthDiary.ts
-│   └── EncryptedMentalHealthDiarySepolia.ts
-├── deploy/             # Deployment scripts
-│   └── 001_deploy_EncryptedMentalHealthDiary.ts
-├── frontend/           # React frontend
-│   ├── src/
-│   │   ├── components/ # React components
-│   │   ├── hooks/      # Custom hooks
-│   │   ├── fhevm/      # FHEVM integration
-│   │   └── lib/        # Utilities
-│   └── public/         # Static assets
-└── types/              # TypeScript types (generated)
-```
-
-## Security Notes
-
-- All data is encrypted before being sent to the blockchain
-- Only the user who created the entry can decrypt it
-- The contract uses FHE to perform computations on encrypted data
-- Private keys are managed by the user's wallet
+- **End-to-End Encryption**: All mental health data is encrypted using FHE before blockchain storage
+- **Decentralized Control**: Users maintain full ownership and decryption rights over their data
+- **Zero-Knowledge Proofs**: FHE enables privacy-preserving analytics without exposing raw data
+- **Wallet-Based Security**: Private keys remain securely managed by user wallets
+- **Audit Trail**: All transactions are immutably recorded on the blockchain
 
 ## License
 

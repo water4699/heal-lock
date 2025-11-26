@@ -4,9 +4,8 @@ pragma solidity ^0.8.27;
 import {FHE, euint32, externalEuint32, ebool} from "@fhevm/solidity/lib/FHE.sol";
 import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 
-/// @title EncryptedMentalHealthDiary - Private Mental Health Diary
-/// @notice Allows users to record encrypted mental health data privately
-/// @dev Uses FHE to store and compute encrypted mental health metrics on-chain
+/// @title EncryptedMentalHealthDiary
+/// @dev Secure mental health tracking with FHE encryption
 contract EncryptedMentalHealthDiary is SepoliaConfig {
     // Structure to store daily encrypted mental health data
     struct DailyEntry {
@@ -110,24 +109,23 @@ contract EncryptedMentalHealthDiary is SepoliaConfig {
         return (entry.mentalStateHandle, entry.stressHandle, entry.timestamp);
     }
 
-    /// @notice Calculate encrypted average mental state score for a date range
+    /// @notice Validate if a date range contains valid entries
     /// @param user The user address
-    /// @param startDate The start date for calculation
-    /// @param endDate The end date for calculation
-    /// @return averageHandle The encrypted handle for average calculation
-    function calculateEncryptedAverage(address user, uint256 startDate, uint256 endDate)
+    /// @param startDate The start date for validation
+    /// @param endDate The end date for validation
+    /// @return isValid True if the date range contains at least one valid entry
+    function validateDateRange(address user, uint256 startDate, uint256 endDate)
         external
         view
-        returns (bytes32 averageHandle)
+        returns (bool isValid)
     {
         require(startDate <= endDate, "Invalid date range");
-
-        // For demonstration, return the most recent entry handle
-        // In production, this would perform actual FHE computations
-        if (_userEntries[user][endDate].exists) {
-            return _userEntries[user][endDate].mentalStateHandle;
+        for (uint256 date = startDate; date <= endDate; date++) {
+            if (_userEntries[user][date].exists) {
+                return true;
+            }
         }
-        return bytes32(0);
+        return false;
     }
 
     /// @notice Get the last entry date for a user
@@ -136,6 +134,23 @@ contract EncryptedMentalHealthDiary is SepoliaConfig {
     function getLastEntryDate(address user) external view returns (uint256) {
         return _lastEntryDate[user];
     }
+
+    /// @notice Get the total entry count for a user
+    /// @param user The user address
+    /// @return The total number of entries
+    function getEntryCount(address user) external view returns (uint256) {
+        return _entryCount[user];
+    }
+
+    /// @notice Check if an entry exists for a specific date
+    /// @param user The user address
+    /// @param date The date identifier
+    /// @return Whether the entry exists
+    function entryExists(address user, uint256 date) external view returns (bool) {
+        return _userEntries[user][date].exists;
+    }
+}
+
 
     /// @notice Get the total entry count for a user
     /// @param user The user address

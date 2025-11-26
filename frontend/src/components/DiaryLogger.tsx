@@ -56,16 +56,23 @@ const DiaryLogger = () => {
       return;
     }
 
-    // Contract address validation is now handled by useMentalHealthDiary hook
-
     try {
       // Convert date to day number (days since epoch)
       const dateObj = new Date(selectedDate);
       const epochDate = new Date(1970, 0, 1);
       const daysSinceEpoch = Math.floor((dateObj.getTime() - epochDate.getTime()) / (1000 * 60 * 60 * 24));
 
-      console.log(`📝 Adding entry for date: ${selectedDate} (days since epoch: ${daysSinceEpoch})`);
-      console.log(`👤 Wallet address: ${connectedAddress}`);
+      // Validate date is not in the future
+      const today = new Date();
+      today.setHours(23, 59, 59, 999); // End of today
+      if (dateObj > today) {
+        toast({
+          title: "Invalid Date",
+          description: "Cannot log entries for future dates.",
+          variant: "destructive",
+        });
+        return;
+      }
 
       await addEntry(daysSinceEpoch, mentalStateScore[0], stressLevel[0]);
       
@@ -168,6 +175,31 @@ const DiaryLogger = () => {
             <Button
               onClick={handleLogEntry}
               disabled={isLoading || !isConnected}
+              className="w-full gap-2 bg-gradient-primary hover:opacity-90 text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 rounded-xl font-semibold text-lg py-6"
+              size="lg"
+            >
+              {isLoading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  Encrypting & Logging...
+                </>
+              ) : (
+                <>
+                  <Lock className="w-4 h-4" />
+                  {isConnected ? "Log Entry" : "Connect Wallet First"}
+                </>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    </section>
+  );
+};
+
+export default DiaryLogger;
+
+
               className="w-full gap-2 bg-gradient-primary hover:opacity-90 text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 rounded-xl font-semibold text-lg py-6"
               size="lg"
             >
