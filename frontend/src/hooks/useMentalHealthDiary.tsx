@@ -200,7 +200,7 @@ export function useMentalHealthDiary(contractAddress?: string | undefined): UseM
             gasLimit: 5000000,
           }
         );
-
+        
         await tx.wait();
 
         setMessage("Entry added successfully! Wait a moment, then you can decrypt your data.");
@@ -311,7 +311,7 @@ export function useMentalHealthDiary(contractAddress?: string | undefined): UseM
     chainId: number,
     context: string
   ): Promise<{ [key: string]: any }> => {
-    // Generate keypair for EIP712 signature (Mode B: like proof-quill-shine-main)
+        // Generate keypair for EIP712 signature (Mode B: like proof-quill-shine-main)
     // CRITICAL: keypair MUST be Uint8Array(32), otherwise SDK falls back to string and causes "not authorized"
     let keypair: { publicKey: Uint8Array; privateKey: Uint8Array };
 
@@ -322,92 +322,92 @@ export function useMentalHealthDiary(contractAddress?: string | undefined): UseM
       // FHEVM SDK requires exact format, fallback to string causes authorization failure
       if (!(keypair.publicKey instanceof Uint8Array) || keypair.publicKey.length !== 32) {
         logger.error(`[${context}] CRITICAL: keypair.publicKey is not Uint8Array(32) - fixing...`);
-        keypair.publicKey = extractPublicKey(keypair.publicKey);
+            keypair.publicKey = extractPublicKey(keypair.publicKey);
         if (!(keypair.publicKey instanceof Uint8Array) || keypair.publicKey.length !== 32) {
           throw new Error(`[${context}] Failed to convert publicKey to Uint8Array(32)`);
         }
       }
 
-      if (!(keypair.privateKey instanceof Uint8Array) || keypair.privateKey.length !== 32) {
+          if (!(keypair.privateKey instanceof Uint8Array) || keypair.privateKey.length !== 32) {
         logger.error(`[${context}] CRITICAL: keypair.privateKey is not Uint8Array(32) - fixing...`);
-        keypair.privateKey = new Uint8Array(32);
-        crypto.getRandomValues(keypair.privateKey);
+            keypair.privateKey = new Uint8Array(32);
+            crypto.getRandomValues(keypair.privateKey);
         if (!(keypair.privateKey instanceof Uint8Array) || keypair.privateKey.length !== 32) {
           throw new Error(`[${context}] Failed to generate valid privateKey Uint8Array(32)`);
         }
-      }
+          }
 
       logger.debug(`[${context}] Keypair validation passed - publicKey: Uint8Array(${keypair.publicKey.length}), privateKey: Uint8Array(${keypair.privateKey.length})`);
-    } else {
+        } else {
       // Fallback for when generateKeypair is not available
-      keypair = {
+          keypair = {
         publicKey: new Uint8Array(32),
         privateKey: new Uint8Array(32),
-      };
+          };
       crypto.getRandomValues(keypair.publicKey);
       crypto.getRandomValues(keypair.privateKey);
       logger.warn(`[${context}] Using fallback keypair generation`);
-    }
+        }
 
-    // Create EIP712 signature for decryption (Mode B: like proof-quill-shine-main)
-    const contractAddresses = [contractAddress as `0x${string}`];
+        // Create EIP712 signature for decryption (Mode B: like proof-quill-shine-main)
+        const contractAddresses = [contractAddress as `0x${string}`];
     const startTimestamp = DECRYPTION_CONFIG.defaultTimestamp();
     const durationDays = DECRYPTION_CONFIG.durationDays;
 
-    let eip712: any;
+        let eip712: any;
     if (typeof fhevmInstance.createEIP712 === "function") {
       eip712 = fhevmInstance.createEIP712(
-        keypair.publicKey,  // Pass Uint8Array directly, not hex string
-        contractAddresses,
-        startTimestamp,
-        durationDays
-      );
-    } else {
-      // Fallback EIP712 structure
-      eip712 = {
-        domain: {
-          name: "FHEVM",
-          version: "1",
-          chainId: chainId,
-          verifyingContract: contractAddresses[0],
-        },
-        types: {
-          UserDecryptRequestVerification: [
-            { name: "publicKey", type: "bytes" },
-            { name: "contractAddresses", type: "address[]" },
-            { name: "contractsChainId", type: "uint256" },
-            { name: "startTimestamp", type: "uint256" },
-            { name: "durationDays", type: "uint256" },
-            { name: "extraData", type: "bytes" },
-          ],
-        },
-        message: {
-          publicKey: ethers.hexlify(keypair.publicKey),  // Use hexlify for message
-          contractAddresses,
-          contractsChainId: chainId,
-          startTimestamp: parseInt(startTimestamp),
-          durationDays: parseInt(durationDays),
-          extraData: "0x",
-        },
-      };
-    }
+            keypair.publicKey,  // Pass Uint8Array directly, not hex string
+            contractAddresses,
+            startTimestamp,
+            durationDays
+          );
+        } else {
+          // Fallback EIP712 structure
+          eip712 = {
+            domain: {
+              name: "FHEVM",
+              version: "1",
+              chainId: chainId,
+              verifyingContract: contractAddresses[0],
+            },
+            types: {
+              UserDecryptRequestVerification: [
+                { name: "publicKey", type: "bytes" },
+                { name: "contractAddresses", type: "address[]" },
+                { name: "contractsChainId", type: "uint256" },
+                { name: "startTimestamp", type: "uint256" },
+                { name: "durationDays", type: "uint256" },
+                { name: "extraData", type: "bytes" },
+              ],
+            },
+            message: {
+              publicKey: ethers.hexlify(keypair.publicKey),  // Use hexlify for message
+              contractAddresses,
+              contractsChainId: chainId,
+              startTimestamp: parseInt(startTimestamp),
+              durationDays: parseInt(durationDays),
+              extraData: "0x",
+            },
+          };
+        }
 
-    // Sign the EIP712 message (Mode B: like proof-quill-shine-main)
-    const signature = await ethersSigner.signTypedData(
-      eip712.domain,
-      { UserDecryptRequestVerification: eip712.types.UserDecryptRequestVerification },
-      eip712.message
-    );
+        // Sign the EIP712 message (Mode B: like proof-quill-shine-main)
+        const signature = await ethersSigner.signTypedData(
+          eip712.domain,
+          { UserDecryptRequestVerification: eip712.types.UserDecryptRequestVerification },
+          eip712.message
+        );
 
-    // For local mock network, signature may need to have "0x" prefix removed
-    const signatureForDecrypt = chainId === 31337
-      ? signature.replace("0x", "")
-      : signature;
+        // For local mock network, signature may need to have "0x" prefix removed
+        const signatureForDecrypt = chainId === 31337 
+          ? signature.replace("0x", "") 
+          : signature;
 
     logger.debug(`[${context}] Decrypting with signature`, {
       handleCount: handleContractPairs.length,
-      chainId,
-      signatureLength: signature.length,
+          chainId,
+          signatureLength: signature.length,
     });
 
     // NOTE: In Mock environment (chainId 31337), FHEVM SDK may not provide registerUser/grantDecryptPermission functions
@@ -421,14 +421,14 @@ export function useMentalHealthDiary(contractAddress?: string | undefined): UseM
     logger.debug(`[${context}] Keypair validation: publicKey=${keypair.publicKey instanceof Uint8Array ? 'Uint8Array' : typeof keypair.publicKey}(${keypair.publicKey.length}), privateKey=${keypair.privateKey instanceof Uint8Array ? 'Uint8Array' : typeof keypair.privateKey}(${keypair.privateKey.length})`);
 
     const decryptedResult = await fhevmInstance.userDecrypt(
-      handleContractPairs,
+          handleContractPairs,
       keypair.privateKey,  // CRITICAL: Must be Uint8Array(32)
       keypair.publicKey,   // CRITICAL: Must be Uint8Array(32)
-      signatureForDecrypt,
-      contractAddresses,
-      address as `0x${string}`,
-      startTimestamp,
-      durationDays
+          signatureForDecrypt,
+          contractAddresses,
+          address as `0x${string}`,
+          startTimestamp,
+          durationDays
     );
 
     logger.debug(`[${context}] ✅ Decryption successful - received ${Object.keys(decryptedResult).length} decrypted values`);
@@ -511,7 +511,7 @@ export function useMentalHealthDiary(contractAddress?: string | undefined): UseM
 
       try {
         setMessage("Decrypting entry...");
-
+        
         // 权限检查机制
         logger.debug("Starting decryption process...");
 
@@ -641,8 +641,8 @@ export function useMentalHealthDiary(contractAddress?: string | undefined): UseM
         );
 
         // For local mock network, signature may need to have "0x" prefix removed (same as proof-quill-shine-main)
-        const signatureForDecrypt = chainId === 31337
-          ? signature.replace("0x", "")
+        const signatureForDecrypt = chainId === 31337 
+          ? signature.replace("0x", "") 
           : signature;
 
         logger.debug("Decrypting with signature", {
@@ -658,21 +658,21 @@ export function useMentalHealthDiary(contractAddress?: string | undefined): UseM
         try {
           // In Mock environment (chainId 31337), FHEVM SDK has permission limitations
           // Try the actual decryption first
-          const decryptedResult = await (fhevmInstance as any).userDecrypt(
-            handleContractPairs,
+        const decryptedResult = await (fhevmInstance as any).userDecrypt(
+          handleContractPairs,
             keypair.privateKey,
             keypair.publicKey,
-            signatureForDecrypt,
-            contractAddresses,
-            address as `0x${string}`,
-            startTimestamp,
-            durationDays
-          );
+          signatureForDecrypt,
+          contractAddresses,
+          address as `0x${string}`,
+          startTimestamp,
+          durationDays
+        );
 
           // Extract decrypted values
           mentalStateValue = Number(decryptedResult[encryptedMentalState] || 0);
           stressValue = Number(decryptedResult[encryptedStress] || 0);
-
+        
           logger.debug("Real FHEVM decryption successful", { mentalStateValue, stressValue });
 
         } catch (decryptError: any) {
@@ -724,7 +724,7 @@ This is expected behavior in development environments.`);
 
 This is normal during development. Try re-adding your data to generate new handles.`);
         } else {
-          setMessage(`Error decrypting: ${errorMessage}`);
+        setMessage(`Error decrypting: ${errorMessage}`);
         }
         return null;
       }
