@@ -1,0 +1,8 @@
+{
+  "network": "sepolia",
+  "contractAddress": "0xF6ef3a0D13D0F71cA66e28Ca84e9f23f119B4007",
+  "deployer": "0x92D42300D688bAdD6753D2F29Cd15657c652cac3",
+  "transactionHash": "0x71af406547cd916910c2006f514136c027fc30958ec7a1b28238a8429503ecba",
+  "deployedAt": "2025-11-27T05:08:39.042Z",
+  "infuraKey": "b18fb7e6ca7045ac83c41157ab93f990"
+}
