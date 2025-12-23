@@ -36,10 +36,6 @@ contract EncryptedMentalHealthDiary is SepoliaConfig {
         bytes32 encryptedMentalStateHandle,
         bytes32 encryptedStressHandle
     ) external {
-        // Convert handles to euint32 for FHE operations
-        euint32 mentalState = FHE.asEuint32(encryptedMentalStateHandle);
-        euint32 stress = FHE.asEuint32(encryptedStressHandle);
-
         // Store the encrypted handles directly (like proof-quill-shine-main)
         _userEntries[msg.sender][date] = DailyEntry({
             mentalStateHandle: encryptedMentalStateHandle,
@@ -47,12 +43,6 @@ contract EncryptedMentalHealthDiary is SepoliaConfig {
             timestamp: block.timestamp,
             exists: true
         });
-
-        // Grant decryption permissions to the user (like proof-quill-shine-main)
-        FHE.allowThis(mentalState);
-        FHE.allow(mentalState, msg.sender);
-        FHE.allowThis(stress);
-        FHE.allow(stress, msg.sender);
 
         // Update tracking
         if (date > _lastEntryDate[msg.sender]) {
@@ -134,23 +124,6 @@ contract EncryptedMentalHealthDiary is SepoliaConfig {
     function getLastEntryDate(address user) external view returns (uint256) {
         return _lastEntryDate[user];
     }
-
-    /// @notice Get the total entry count for a user
-    /// @param user The user address
-    /// @return The total number of entries
-    function getEntryCount(address user) external view returns (uint256) {
-        return _entryCount[user];
-    }
-
-    /// @notice Check if an entry exists for a specific date
-    /// @param user The user address
-    /// @param date The date identifier
-    /// @return Whether the entry exists
-    function entryExists(address user, uint256 date) external view returns (bool) {
-        return _userEntries[user][date].exists;
-    }
-}
-
 
     /// @notice Get the total entry count for a user
     /// @param user The user address

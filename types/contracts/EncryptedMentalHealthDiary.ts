@@ -34,6 +34,7 @@ export interface EncryptedMentalHealthDiaryInterface extends Interface {
       | "getMentalStateHandle"
       | "getStressHandle"
       | "protocolId"
+      | "validateDateRange"
   ): FunctionFragment;
 
   getEvent(
@@ -72,6 +73,10 @@ export interface EncryptedMentalHealthDiaryInterface extends Interface {
     functionFragment: "protocolId",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "validateDateRange",
+    values: [AddressLike, BigNumberish, BigNumberish]
+  ): string;
 
   decodeFunctionResult(functionFragment: "addEntry", data: BytesLike): Result;
   decodeFunctionResult(
@@ -96,6 +101,10 @@ export interface EncryptedMentalHealthDiaryInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "protocolId", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "validateDateRange",
+    data: BytesLike
+  ): Result;
 }
 
 export namespace EntryAddedEvent {
@@ -218,6 +227,12 @@ export interface EncryptedMentalHealthDiary extends BaseContract {
 
   protocolId: TypedContractMethod<[], [bigint], "view">;
 
+  validateDateRange: TypedContractMethod<
+    [user: AddressLike, startDate: BigNumberish, endDate: BigNumberish],
+    [boolean],
+    "view"
+  >;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
@@ -276,6 +291,13 @@ export interface EncryptedMentalHealthDiary extends BaseContract {
   getFunction(
     nameOrSignature: "protocolId"
   ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "validateDateRange"
+  ): TypedContractMethod<
+    [user: AddressLike, startDate: BigNumberish, endDate: BigNumberish],
+    [boolean],
+    "view"
+  >;
 
   getEvent(
     key: "EntryAdded"

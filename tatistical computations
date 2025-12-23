@@ -1,0 +1,17 @@
+56e1a3e|2025-11-25 11:30|NathanGunther|dcoxze7631@outlook.com|docs: add project demonstration video
+a6a014b|2025-11-25 10:15|NathanGunther|dcoxze7631@outlook.com|docs: add comprehensive project documentation
+31a55d5|2025-11-22 14:44|NathanGunther|dcoxze7631@outlook.com|feat: generate TypeScript type definitions for contracts
+1689760|2025-11-22 13:28|NathanGunther|dcoxze7631@outlook.com|feat: add deployment and diagnostic scripts
+177fc32|2025-11-22 11:07|NathanGunther|dcoxze7631@outlook.com|feat: create application pages and contract interfaces
+f9b6443|2025-11-22 09:52|NathanGunther|dcoxze7631@outlook.com|feat: implement main React application structure
+deab562|2025-11-21 15:38|NathanGunther|dcoxze7631@outlook.com|feat: add utility hooks and Wagmi configuration
+84e147d|2025-11-21 14:22|NathanGunther|dcoxze7631@outlook.com|feat: integrate FHEVM SDK for encrypted computations
+1bd60c8|2025-11-21 13:15|NathanGunther|dcoxze7631@outlook.com|feat: add reusable UI components with Tailwind CSS
+c3dd6e9|2025-11-21 11:47|NathanGunther|dcoxze7631@outlook.com|feat: implement WalletConnect and Logo components
+3b6e95d|2025-11-21 10:33|NathanGunther|dcoxze7631@outlook.com|feat: add DiaryViewer component for encrypted data display
+eb14efb|2025-11-20 15:41|NathanGunther|dcoxze7631@outlook.com|feat: enhance frontend validation and error handling
+daad252|2025-11-20 14:28|NathanGunther|dcoxze7631@outlook.com|fix: restore FHE decryption permissions and error checks
+17405d4|2025-11-20 13:12|NathanGunther|dcoxze7631@outlook.com|feat: set up React frontend foundation
+7b470f6|2025-11-20 11:47|NathanGunther|dcoxze7631@outlook.com|test: add Hardhat test suite for mental health contract
+a356985|2025-11-20 10:22|NathanGunther|dcoxze7631@outlook.com|feat: implement FHE mental health diary contract
+49356ff|2025-11-20 09:15|NathanGunther|dcoxze7631@outlook.com|feat: initialize project configuration files

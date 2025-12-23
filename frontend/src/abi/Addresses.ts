@@ -3,7 +3,7 @@
 
 export const CONTRACT_ADDRESSES = {
   // Local Hardhat network (chainId: 31337) - Updated with FHE permissions
-  localhost: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+  localhost: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
 
   // Sepolia testnet (chainId: 11155111)
   sepolia: "0xF6ef3a0D13D0F71cA66e28Ca84e9f23f119B4007",
